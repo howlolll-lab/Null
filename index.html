@@ -56,4 +56,127 @@
 
         /* 右側：分析儀表板 */
         .analysis-panel {
-            flex: 0.
+            flex: 0.8;
+            padding: 40px;
+            background-color: #DBDBDB;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            border-left: 1px solid var(--border);
+            overflow-y: auto;
+        }
+
+        .countdown-box {
+            background: var(--highlight);
+            padding: 15px;
+            border-radius: 4px;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .countdown-timer {
+            font-size: 1.5rem;
+            font-weight: bold;
+            display: block;
+            color: #5A6346;
+        }
+
+        .card {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 4px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+        }
+
+        .card h3 {
+            margin: 0 0 12px 0;
+            font-size: 0.8rem;
+            letter-spacing: 0.1rem;
+            color: var(--text-muted);
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 5px;
+        }
+
+        .card-content {
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .action-card {
+            border-top: 4px solid var(--accent);
+        }
+
+        .parking-card {
+            background: rgba(240, 240, 240, 0.5);
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="write-panel">
+        <div class="header-info">
+            <span>MODE: TEXT_STREAM_DEFRAG</span>
+            <span id="current-time"></span>
+        </div>
+        <textarea placeholder="在這裡輸入任何上班的不爽或遊學的期待..."></textarea>
+    </div>
+
+    <div class="analysis-panel">
+        <div class="countdown-box">
+            <span style="font-size: 0.7rem; letter-spacing: 0.1rem;">距離目標離職日 (04/10)</span>
+            <span class="countdown-timer" id="timer">-- Days</span>
+        </div>
+
+        <div class="card">
+            <h3>FACTS / 事實清單</h3>
+            <div class="card-content">
+                • 離職目標：2026/04/10<br>
+                • 日本遊學計畫：一個月<br>
+                • 職涯階段：製造業 3 年滿期
+            </div>
+        </div>
+        
+        <div class="card action-card">
+            <h3>15-MIN ACTION / 微行動</h3>
+            <div class="card-content">
+                找回控制感：在 GitHub 建立一個名為「Japan_Study_Trip」的資料夾，或先蒐集 3 個喜歡的城市照片。
+            </div>
+        </div>
+
+        <div class="card parking-card">
+            <h3>PARKING / 懸置</h3>
+            <div class="card-content">
+                與老闆娘的爭執細節。既然已決定離開，這些情緒產出的公式已不再重要。
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 更新當前時間
+        function updateClock() {
+            const now = new Date();
+            document.getElementById('current-time').innerText = now.toLocaleString();
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // 倒數計時邏輯 (目標 2026/04/10)
+        function updateTimer() {
+            const target = new Date('2026-04-10T00:00:00');
+            const now = new Date();
+            const diff = target - now;
+
+            if (diff > 0) {
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+                document.getElementById('timer').innerText = days + "D " + hours + "H";
+            } else {
+                document.getElementById('timer').innerText = "FREEDOM!";
+            }
+        }
+        setInterval(updateTimer, 60000);
+        updateTimer();
+    </script>
+</body>
+</html>
