@@ -36,8 +36,7 @@
         <div class="card" style="opacity:0.5"><h3>PARKING</h3><div id="p" style="font-size:0.9rem">等待中...</div></div>
     </div>
 
-    <script>
-        // 1. 這裡請只貼上那串長長的 Key，不要有空格，不要有 :1
+<script>
         const KEY = "AIzaSyBRl3rnqguZYnnXzXj8YMQ2DozaQFz1SSI"; 
 
         const input = document.getElementById('input');
@@ -52,10 +51,10 @@
                 status.style.display = 'block';
                 input.value = '';
 
-                // 2. 正確的 API 網址
-                const url = "https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=" + KEY;
+                // 改回 v1beta 版本
+                const url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" + KEY;
 
-                const prompt = `你是一個冷靜的思緒整理大師。請分析這段文字，並嚴格以 JSON 格式回傳（不含任何其他說明文字）：
+                const prompt = `你是一個冷靜的思緒整理大師。請分析這段文字，並嚴格以 JSON 格式回傳（不要有前言）：
                 { "facts": "條列式事實", "action": "一個15分鐘微行動", "parking": "暫時放下的事" }
                 輸入文字：${text}`;
 
@@ -69,16 +68,19 @@
                     const data = await res.json();
                     
                     if (data.error) {
-                        document.getElementById('f').innerText = "錯誤: " + data.error.message;
+                        document.getElementById('f').innerText = "API 錯誤: " + data.error.message;
                     } else {
                         const rawText = data.candidates[0].content.parts[0].text;
-                        const json = JSON.parse(rawText.match(/\{[\s\S]*\}/)[0]);
-                        document.getElementById('f').innerHTML = json.facts;
-                        document.getElementById('a').innerText = json.action;
-                        document.getElementById('p').innerText = json.parking;
+                        const jsonMatch = rawText.match(/\{[\s\S]*\}/);
+                        if (jsonMatch) {
+                            const json = JSON.parse(jsonMatch[0]);
+                            document.getElementById('f').innerHTML = json.facts.replace(/\n/g, '<br>');
+                            document.getElementById('a').innerText = json.action;
+                            document.getElementById('p').innerText = json.parking;
+                        }
                     }
                 } catch (err) {
-                    document.getElementById('f').innerText = "分析出錯了，請檢查 Key。";
+                    document.getElementById('f').innerText = "分析出錯，請檢查網路。";
                     console.error(err);
                 } finally {
                     status.style.display = 'none';
@@ -86,7 +88,6 @@
             }
         });
 
-        // 輔助功能
         function tick(){
             document.getElementById('clock').innerText = new Date().toLocaleString();
             const diff = new Date('2026-04-10') - new Date();
