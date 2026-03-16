@@ -3,102 +3,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>思緒除塵器 | Thought Dusting</title>
+    <title>Defrag | 思緒重組</title>
     <style>
         :root {
-            --bg-color: #0f111a;
-            --card-bg: #1e2132;
-            --accent-color: #00d4ff;
-            --text-color: #e0e0e0;
-            --muted-text: #888;
+            --bg-color: #E5E5E5;      /* 淺灰底 */
+            --card-bg: #F0F0F0;       /* 卡片微亮灰 */
+            --text-main: #4A4A4A;     /* 深灰字 */
+            --text-muted: #8E8E8E;    /* 隱藏字 */
+            --accent: #8E9775;        /* 莫蘭迪綠 (行動) */
+            --border: #D1D1D1;        /* 邊框線 */
         }
 
         body {
             background-color: var(--bg-color);
-            color: var(--text-color);
-            font-family: 'JetBrains Mono', 'PingFang TC', monospace;
+            color: var(--text-main);
+            font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif;
             display: flex;
             height: 100vh;
             margin: 0;
-            overflow: hidden;
         }
 
-        /* 左側：純文字串流 */
-        .stream-area {
-            flex: 1.5;
-            padding: 40px;
+        /* 左側：書寫區 */
+        .write-panel {
+            flex: 1.2;
+            padding: 60px;
             display: flex;
             flex-direction: column;
-            border-right: 1px solid #333;
         }
 
         textarea {
             flex: 1;
             background: transparent;
             border: none;
-            color: var(--text-color);
-            font-size: 1.1rem;
-            line-height: 1.6;
+            color: var(--text-main);
+            font-size: 1.15rem;
+            line-height: 1.8;
+            letter-spacing: 0.05rem;
             resize: none;
             outline: none;
         }
 
-        /* 右側：理性儀表板 */
-        .dashboard-area {
-            flex: 1;
+        textarea::placeholder {
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
+        /* 右側：分析儀表板 */
+        .analysis-panel {
+            flex: 0.8;
             padding: 40px;
-            background-color: rgba(30, 33, 50, 0.5);
+            background-color: #DBDBDB; /* 稍微加深側欄 */
             display: flex;
             flex-direction: column;
-            gap: 20px;
-            overflow-y: auto;
+            gap: 25px;
+            border-left: 1px solid var(--border);
         }
 
         .card {
             background: var(--card-bg);
-            padding: 20px;
-            border-radius: 8px;
-            border-left: 4px solid var(--accent-color);
+            padding: 24px;
+            border-radius: 4px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.03);
         }
 
         .card h3 {
-            margin-top: 0;
-            font-size: 0.9rem;
-            color: var(--accent-color);
-            text-transform: uppercase;
-        }
-
-        .card p, .card li {
-            font-size: 0.95rem;
-            margin-bottom: 0;
-        }
-
-        .parking-lot {
-            border-left-color: #ffcc00; /* 懸置區用黃色標註 */
-        }
-    </style>
-</head>
-<body>
-
-    <div class="stream-area">
-        <h2 style="color: var(--muted-text); font-size: 0.8rem;">[ 腦袋倒乾淨中... ]</h2>
-        <textarea placeholder="想到什麼就寫什麼... 不用管邏輯..."></textarea>
-    </div>
-
-    <div class="dashboard-area">
-        <div class="card">
-            <h3>事實清單 📋</h3>
-            <p>1. ...<br>2. ...</p>
-        </div>
-        <div class="card">
-            <h3>15分鐘微行動 💪</h3>
-            <p>等待分析中...</p>
-        </div>
-        <div class="card parking-lot">
-            <h3>今天不用解決的事 ⏳</h3>
-            <p>讓它懸在那裡吧。</p>
-        </div>
-    </div>
-
-</body>
-</html>
+            margin: 0 0 15px 0;
+            font-size: 0.85rem;
+            letter-spacing: 0.1rem;
+            color: var(--text-muted);
+            font-weight:
