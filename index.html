@@ -82,7 +82,7 @@
             background: var(--card-bg);
             padding: 24px;
             border-radius: 2px;
-            margin-bottom: 15px;
+            margin-bottom: 5px;
         }
 
         .card h3 {
@@ -91,14 +91,23 @@
             color: var(--text-muted);
             border-bottom: 1px solid var(--border);
             padding-bottom: 8px;
+            text-transform: uppercase;
         }
 
-        .log-item {
+        .card-content {
             font-size: 0.9rem;
-            margin-bottom: 10px;
-            padding-bottom: 10px;
-            border-bottom: 1px dashed #CCC;
-            line-height: 1.6;
+            line-height: 1.7;
+        }
+
+        .action-card {
+            border-left: 4px solid var(--accent);
+        }
+
+        .status-msg {
+            font-size: 0.7rem;
+            color: var(--accent);
+            margin-top: 10px;
+            display: none; /* 平時隱藏 */
         }
     </style>
 </head>
@@ -109,62 +118,103 @@
             <span class="project-name">NULL</span>
             <span id="current-time"></span>
         </div>
-        <textarea id="userInput" placeholder="輸入思緒後按下 Enter 卸載... (Shift+Enter 換行)"></textarea>
+        <textarea id="userInput" placeholder="輸入思緒後按下 Enter 卸載... (AI 將自動分析)"></textarea>
+        <div id="status" class="status-msg">AI 正在重組思緒中...</div>
     </div>
 
     <div class="analysis-panel">
         <div class="countdown-box">
-            <span style="font-size: 0.7rem;">DEPARTURE COUNTDOWN (04/10)</span>
+            <span style="font-size: 0.7rem; letter-spacing: 0.1rem;">DEPARTURE (04/10)</span>
             <div id="timer" style="font-size: 1.8rem; font-weight: bold;">--D --H</div>
         </div>
 
         <div class="card">
-            <h3>LOG / 卸載紀錄</h3>
-            <div id="log-content">
-                </div>
+            <h3>FACTS / 事實分析</h3>
+            <div id="fact-content" class="card-content">等待卸載思緒...</div>
+        </div>
+        
+        <div class="card action-card">
+            <h3>ACTION / 15-MIN 微行動</h3>
+            <div id="action-content" class="card-content">完成分析後將在此顯示建議。</div>
+        </div>
+
+        <div class="card" style="opacity: 0.5;">
+            <h3>PARKING / 懸置</h3>
+            <div id="parking-content" class="card-content">讓它暫時停在這裡。</div>
         </div>
     </div>
 
     <script>
-        const textarea = document.getElementById('userInput');
-        const logContent = document.getElementById('log-content');
+        // 【重要】請在此處填入你申請到的 API Key
+        const API_KEY = "AIzaSyBRl3rnqguZYnnXzXj8YMQ2DozaQFz1SSI"; 
 
-        // 偵測 Enter 鍵
+        const textarea = document.getElementById('userInput');
+        const statusMsg = document.getElementById('status');
+        const factContent = document.getElementById('fact-content');
+        const actionContent = document.getElementById('action-content');
+        const parkingContent = document.getElementById('parking-content');
+
+        // 偵測 Enter 鍵觸發 AI 分析
         textarea.addEventListener('keydown', function(e) {
             if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault(); // 防止預設的換行
-                const value = textarea.value.trim();
-                
-                if (value) {
-                    // 1. 將文字推向紀錄區
-                    const newItem = document.createElement('div');
-                    newItem.className = 'log-item';
-                    newItem.innerText = `> ${value}`;
-                    logContent.prepend(newItem); // 最新的放在最上面
-                    
-                    // 2. 清空輸入框 (歸零)
-                    textarea.value = '';
+                e.preventDefault();
+                const text = textarea.value.trim();
+                if (text && API_KEY !== "在這裡貼上你的KEY") {
+                    callAI(text);
+                    textarea.value = ''; // 歸零 (NULL)
+                } else if (API_KEY === "在這裡貼上你的KEY") {
+                    alert("請先在程式碼中填入 API Key 才能啟動 AI 大腦！");
                 }
             }
         });
 
-        // 更新時間
+        // 呼叫 Gemini AI 的大腦邏輯
+        async function callAI(text) {
+            statusMsg.style.display = 'block';
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
+            
+            const prompt = `你是一個冷靜、專業的「思緒整理大師」。
+            使用者的背景：在傳統製造業工作滿三年，預計2026/04/10離職，未來想去日本遊學一個月。
+            任務：分析這段文字，並嚴格以 JSON 格式回傳，不要有額外文字。
+            JSON格式示例：{ "facts": "條列式事實", "action": "一個15分鐘內可完成的行動", "parking": "一件目前可以先放下不管的事" }
+            輸入文字：${text}`;
+
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+                });
+                const data = await response.json();
+                const responseText = data.candidates[0].content.parts[0].text;
+                const cleanJson = responseText.replace(/```json|```/g, '').trim();
+                const result = JSON.parse(cleanJson);
+                
+                // 更新右側介面內容
+                factContent.innerHTML = result.facts.replace(/\n/g, '<br>');
+                actionContent.innerText = result.action;
+                parkingContent.innerText = result.parking;
+                statusMsg.style.display = 'none';
+
+            } catch (error) {
+                console.error("AI 分析發生錯誤:", error);
+                statusMsg.innerText = "分析失敗，請檢查 API Key 或網路。";
+            }
+        }
+
+        // 時鐘與倒數功能
         function updateClock() {
-            const now = new Date();
-            document.getElementById('current-time').innerText = now.toLocaleString();
+            document.getElementById('current-time').innerText = new Date().toLocaleString();
         }
         setInterval(updateClock, 1000);
         updateClock();
 
-        // 倒數計時
         function updateTimer() {
-            const target = new Date('2026-04-10T00:00:00');
-            const now = new Date();
-            const diff = target - now;
+            const diff = new Date('2026-04-10T00:00:00') - new Date();
             if (diff > 0) {
-                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-                const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
-                document.getElementById('timer').innerText = days + "D " + hours + "H";
+                const d = Math.floor(diff / 86400000);
+                const h = Math.floor((diff % 86400000) / 3600000);
+                document.getElementById('timer').innerText = `${d}D ${h}H`;
             }
         }
         setInterval(updateTimer, 60000);
