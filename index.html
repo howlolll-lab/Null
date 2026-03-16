@@ -41,7 +41,6 @@
             letter-spacing: 0.1rem;
         }
 
-        /* 標題正式改為 NULL */
         .project-name {
             font-weight: bold;
             color: var(--text-main);
@@ -83,6 +82,7 @@
             background: var(--card-bg);
             padding: 24px;
             border-radius: 2px;
+            margin-bottom: 15px;
         }
 
         .card h3 {
@@ -91,6 +91,14 @@
             color: var(--text-muted);
             border-bottom: 1px solid var(--border);
             padding-bottom: 8px;
+        }
+
+        .log-item {
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px dashed #CCC;
+            line-height: 1.6;
         }
     </style>
 </head>
@@ -101,7 +109,7 @@
             <span class="project-name">NULL</span>
             <span id="current-time"></span>
         </div>
-        <textarea placeholder="將混亂的思緒輸入於此，直到它們歸零 (NULL)..."></textarea>
+        <textarea id="userInput" placeholder="輸入思緒後按下 Enter 卸載... (Shift+Enter 換行)"></textarea>
     </div>
 
     <div class="analysis-panel">
@@ -111,12 +119,36 @@
         </div>
 
         <div class="card">
-            <h3>LOG / 紀錄</h3>
-            <div id="log-content" style="font-size: 0.9rem;">等待輸入資料中...</div>
+            <h3>LOG / 卸載紀錄</h3>
+            <div id="log-content">
+                </div>
         </div>
     </div>
 
     <script>
+        const textarea = document.getElementById('userInput');
+        const logContent = document.getElementById('log-content');
+
+        // 偵測 Enter 鍵
+        textarea.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault(); // 防止預設的換行
+                const value = textarea.value.trim();
+                
+                if (value) {
+                    // 1. 將文字推向紀錄區
+                    const newItem = document.createElement('div');
+                    newItem.className = 'log-item';
+                    newItem.innerText = `> ${value}`;
+                    logContent.prepend(newItem); // 最新的放在最上面
+                    
+                    // 2. 清空輸入框 (歸零)
+                    textarea.value = '';
+                }
+            }
+        });
+
+        // 更新時間
         function updateClock() {
             const now = new Date();
             document.getElementById('current-time').innerText = now.toLocaleString();
@@ -124,6 +156,7 @@
         setInterval(updateClock, 1000);
         updateClock();
 
+        // 倒數計時
         function updateTimer() {
             const target = new Date('2026-04-10T00:00:00');
             const now = new Date();
