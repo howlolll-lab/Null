@@ -3,16 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sift | 職涯轉折重組器</title>
+    <title>NULL | 思緒重組</title>
     <style>
         :root {
-            --bg-color: #E5E5E5;      /* 淺灰底 */
-            --card-bg: #F0F0F0;       /* 卡片微亮灰 */
-            --text-main: #4A4A4A;     /* 深灰字 */
-            --text-muted: #8E8E8E;    /* 隱藏字 */
-            --accent: #8E9775;        /* 莫蘭迪綠 (行動) */
-            --border: #D1D1D1;        /* 邊框線 */
-            --highlight: #C2C8B5;     /* 倒數計時背景 */
+            --bg-color: #E5E5E5;
+            --card-bg: #F0F0F0;
+            --text-main: #4A4A4A;
+            --text-muted: #9A9A9A;
+            --accent: #8E9775;
+            --border: #D8D8D8;
+            --highlight: #D1D5C8;
         }
 
         body {
@@ -25,20 +25,27 @@
             overflow: hidden;
         }
 
-        /* 左側：書寫區 */
         .write-panel {
-            flex: 1.2;
-            padding: 40px 60px;
+            flex: 1.3;
+            padding: 50px 70px;
             display: flex;
             flex-direction: column;
         }
 
         .header-info {
-            margin-bottom: 20px;
-            font-size: 0.8rem;
+            margin-bottom: 25px;
+            font-size: 0.75rem;
             color: var(--text-muted);
             display: flex;
             justify-content: space-between;
+            letter-spacing: 0.1rem;
+        }
+
+        /* 標題正式改為 NULL */
+        .project-name {
+            font-weight: bold;
+            color: var(--text-main);
+            font-size: 1.2rem;
         }
 
         textarea {
@@ -47,68 +54,43 @@
             border: none;
             color: var(--text-main);
             font-size: 1.1rem;
-            line-height: 1.8;
+            line-height: 1.9;
             resize: none;
             outline: none;
             border-top: 1px solid var(--border);
-            padding-top: 20px;
+            padding-top: 30px;
         }
 
-        /* 右側：分析儀表板 */
         .analysis-panel {
-            flex: 0.8;
-            padding: 40px;
+            flex: 0.7;
+            padding: 50px 40px;
             background-color: #DBDBDB;
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 25px;
             border-left: 1px solid var(--border);
             overflow-y: auto;
         }
 
         .countdown-box {
             background: var(--highlight);
-            padding: 15px;
-            border-radius: 4px;
+            padding: 20px;
+            border-radius: 2px;
             text-align: center;
-            margin-bottom: 10px;
-        }
-
-        .countdown-timer {
-            font-size: 1.5rem;
-            font-weight: bold;
-            display: block;
-            color: #5A6346;
         }
 
         .card {
             background: var(--card-bg);
-            padding: 20px;
-            border-radius: 4px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+            padding: 24px;
+            border-radius: 2px;
         }
 
         .card h3 {
-            margin: 0 0 12px 0;
-            font-size: 0.8rem;
-            letter-spacing: 0.1rem;
+            margin: 0 0 15px 0;
+            font-size: 0.75rem;
             color: var(--text-muted);
             border-bottom: 1px solid var(--border);
-            padding-bottom: 5px;
-        }
-
-        .card-content {
-            font-size: 0.9rem;
-            line-height: 1.6;
-        }
-
-        .action-card {
-            border-top: 4px solid var(--accent);
-        }
-
-        .parking-card {
-            background: rgba(240, 240, 240, 0.5);
-            color: var(--text-muted);
+            padding-bottom: 8px;
         }
     </style>
 </head>
@@ -116,44 +98,25 @@
 
     <div class="write-panel">
         <div class="header-info">
-            <span>MODE: TEXT_STREAM_DEFRAG</span>
+            <span class="project-name">NULL</span>
             <span id="current-time"></span>
         </div>
-        <textarea placeholder="在這裡輸入任何上班的不爽或遊學的期待..."></textarea>
+        <textarea placeholder="將混亂的思緒輸入於此，直到它們歸零 (NULL)..."></textarea>
     </div>
 
     <div class="analysis-panel">
         <div class="countdown-box">
-            <span style="font-size: 0.7rem; letter-spacing: 0.1rem;">距離目標離職日 (04/10)</span>
-            <span class="countdown-timer" id="timer">-- Days</span>
+            <span style="font-size: 0.7rem;">DEPARTURE COUNTDOWN (04/10)</span>
+            <div id="timer" style="font-size: 1.8rem; font-weight: bold;">--D --H</div>
         </div>
 
         <div class="card">
-            <h3>FACTS / 事實清單</h3>
-            <div class="card-content">
-                • 離職目標：2026/04/10<br>
-                • 日本遊學計畫：一個月<br>
-                • 職涯階段：製造業 3 年滿期
-            </div>
-        </div>
-        
-        <div class="card action-card">
-            <h3>15-MIN ACTION / 微行動</h3>
-            <div class="card-content">
-                找回控制感：在 GitHub 建立一個名為「Japan_Study_Trip」的資料夾，或先蒐集 3 個喜歡的城市照片。
-            </div>
-        </div>
-
-        <div class="card parking-card">
-            <h3>PARKING / 懸置</h3>
-            <div class="card-content">
-                與老闆娘的爭執細節。既然已決定離開，這些情緒產出的公式已不再重要。
-            </div>
+            <h3>LOG / 紀錄</h3>
+            <div id="log-content" style="font-size: 0.9rem;">等待輸入資料中...</div>
         </div>
     </div>
 
     <script>
-        // 更新當前時間
         function updateClock() {
             const now = new Date();
             document.getElementById('current-time').innerText = now.toLocaleString();
@@ -161,18 +124,14 @@
         setInterval(updateClock, 1000);
         updateClock();
 
-        // 倒數計時邏輯 (目標 2026/04/10)
         function updateTimer() {
             const target = new Date('2026-04-10T00:00:00');
             const now = new Date();
             const diff = target - now;
-
             if (diff > 0) {
                 const days = Math.floor(diff / (1000 * 60 * 60 * 24));
                 const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
                 document.getElementById('timer').innerText = days + "D " + hours + "H";
-            } else {
-                document.getElementById('timer').innerText = "FREEDOM!";
             }
         }
         setInterval(updateTimer, 60000);
